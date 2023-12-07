@@ -1,77 +1,49 @@
-# GStreamer template repository
+# GStreamer Custom Plugin: logo plugin
 
-This git module contains template code for possible GStreamer projects.
+## Objective:
 
-* gst-app :
-  basic meson-based layout for writing a GStreamer-based application.
+Develop a GStreamer plugin that imposes a logo onto a video stream in NV12 format while supporting a maximum resolution of 1080p and 60 fps. The plugin will also offer animation options, allowing the user to rotate the logo clockwise or counterclockwise and scroll the logo vertically or horizontally at variable speeds.
 
-* gst-plugin :
-  basic meson-based layout and basic filter code for writing a GStreamer plug-in.
+Phase-1:
 
-## License
+Develop a GStreamer plugin that imposes a logo onto a video stream in NV12 format while supporting a maximum resolution of 1080p and 60 fps. Provide an option for the user to specify the location of the PNG logo file on the local file system. Allow the user to specify the coordinates for placing the logo on the video frame.
 
-This code is provided under a MIT license [MIT], which basically means "do
-with it as you wish, but don't blame us if it doesn't work". You can use
-this code for any project as you wish, under any license as you wish. We
-recommend the use of the LGPL [LGPL] license for applications and plugins,
-given the minefield of patents the multimedia is nowadays. See our website
-for details [Licensing].
+The plugin should also offer below animation option:Provide options for clockwise and counterclockwise rotation.  Allow the user to set the rotation speed as 'slow,' 'medium,' 'fast,' or with any other relevant arguments.
 
-## Usage
+Phase-2:
 
-Configure and build all examples (application and plugins) as such:
+Add alpha blending support:plugin imposes the logo with transparency. Transparency level should be user configurable.
 
-    meson builddir
-    ninja -C builddir
+Add below additional option in animation:Support scrolling of the logo in both horizontal and vertical directions. Allow the user to specify the direction (up, down, left, right).
 
-See <https://mesonbuild.com/Quick-guide.html> on how to install the Meson
-build system and ninja.
+*****Steps to run the custom plugin*****
 
-Modify `gst-plugin/meson.build` to add or remove source files to build or
-add additional dependencies or compiler flags or change the name of the
-plugin file to be installed.
+## Compilation Steps:
+$ meson build
+$ ninja -C build
 
-Modify `meson.build` to check for additional library dependencies
-or other features needed by your plugin.
+## Loading the Plugin:
+$ sudo ninja -C build install
+$ export GST_PLUGIN_PATH=/usr/local/lib/x86_64-linux-gnu/gstreamer-1.0
 
-Once the plugin is built you can either install system-wide it with `sudo ninja
--C builddir install` (however, this will by default go into the `/usr/local`
-prefix where it won't be picked up by a `GStreamer` installed from packages, so
-you would need to set the `GST_PLUGIN_PATH` environment variable to include or
-point to `/usr/local/lib/gstreamer-1.0/` for your plugin to be found by a
-from-package `GStreamer`).
+## Verify Plugin: 
+-After the plugin is loaded, you can inspect it using the following command:
+$ gst-inspect-1.0 mylogo
 
-Alternatively, you will find your plugin binary in `builddir/gst-plugins/src/`
-as `libgstplugin.so` or similar (the extension may vary), so you can also set
-the `GST_PLUGIN_PATH` environment variable to the `builddir/gst-plugins/src/`
-directory (best to specify an absolute path though).
+## Using the Plugin:
 
-You can also check if it has been built correctly with:
+## usage
+Once the gstreamer plugin is loaded and installed you can use it in gstreamer pipeline with the element name as 'mylogo'.
+-To use the mylogo plugin in your GStreamer pipeline, you have the following options:
 
-    gst-inspect-1.0 builddir/gst-plugins/src/libgstplugin.so
+1.Default Configuration:
+    -The default logo_x and logo_y coordinates are set to 100 and 100 respectively with respect to video frame with default rotation_direction to clockwise(1).
+    $ gst-launch-1.0 videotestsrc ! video/x-raw, format=NV12, width=1920, height=1080, framerate=60/1 ! mylogo ! autovideosink
 
-## Auto-generating your own plugin
-
-You will find a helper script in `gst-plugins/tools/make_element` to generate
-the source/header files for a new plugin.
-
-To create sources for `myfilter` based on the `gsttransform` template run:
-
-``` shell
-cd src;
-../tools/make_element myfilter gsttransform
-```
-
-This will create `gstmyfilter.c` and `gstmyfilter.h`. Open them in an editor and
-start editing. There are several occurances of the string `template`, update
-those with real values. The plugin will be called `myfilter` and it will have
-one element called `myfilter` too. Also look for `FIXME:` markers that point you
-to places where you need to edit the code.
-
-You can then add your sources files to `gst-plugins/meson.build` and re-run
-ninja to have your plugin built.
-
-
-[MIT]: http://www.opensource.org/licenses/mit-license.php or COPYING.MIT
-[LGPL]: http://www.opensource.org/licenses/lgpl-license.php or COPYING.LIB
-[Licensing]: https://gstreamer.freedesktop.org/documentation/application-development/appendix/licensing.html
+2.Custom Configuration:
+    -You can customize the configuration of mylogo plugin by modifying its properties such as logo_x, logo_y, rotation_angle, rotation_speed, alpha, etc.
+    -First, set logo_x and logo_y coordinates and accordingly other properties with specific values as you needed.
+    example-
+    1. $ gst-launch-1.0 videotestsrc ! video/x-raw, format=NV12, width=1920, height=1080, framerate=24/1 ! mylogo logo_x=800 logo_y=500 rotation_direction=-1 rotation_angle=40 alpha=0.7 ! autovideosink
+    
+    2. $ gst-launch-1.0 videotestsrc ! video/x-raw, format=NV12, width=1920, height=1080, framerate=24/1 ! mylogo logo_x=800 logo_y=500 scroll_direction=down scroll_speed=20 ! autovideosink

@@ -12,6 +12,11 @@ gst_dep = dependency('gstreamer-1.0', version : '>=1.19',
     required : true, fallback : ['gstreamer', 'gst_dep'])
 gstbase_dep = dependency('gstreamer-base-1.0', version : '>=1.19',
   fallback : ['gstreamer', 'gst_base_dep'])
+gstvideo_dep = dependency('gstreamer-video-1.0', version : '>=1.19',
+  fallback : ['gstreamer', 'gst_video_dep'])
+gdkpixbuf_dep = dependency('gdk-pixbuf-2.0')
 
-subdir('gst-app')
+cairo_dep = dependency('cairo', required : true)
+math_lib = cc.find_library('m', required : true)
+
 subdir('gst-plugin')
