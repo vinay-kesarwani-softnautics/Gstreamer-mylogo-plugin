@@ -1,9 +1,0 @@
-{
-    "files.associations": {
-        "gstmylogo.h": "c",
-        "video.h": "c",
-        "time.h": "c",
-        "videooverlay.h": "c",
-        "math.h": "c"
-    }
-}
