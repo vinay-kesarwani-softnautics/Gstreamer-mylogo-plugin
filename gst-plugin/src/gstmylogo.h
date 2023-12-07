@@ -29,9 +29,6 @@ struct _Gstmylogo
   gint scroll_speed;
 };
 
-static void blend_logo(guint8 *y_plane, guint8 *uv_plane, GstVideoInfo info, cairo_surface_t *image,
-                gint image_x, gint image_y, gdouble alpha, double rotation_angle_rad);
-
 G_END_DECLS
 
 #endif /* __GST_MYLOGO_H__ */
